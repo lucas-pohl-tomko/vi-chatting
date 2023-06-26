@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
+import { useAuth } from "../firebase"
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
@@ -14,8 +14,17 @@ const router = createRouter({
                     component: () => import('../views/Client.vue'),
                 }
             ]
-        }
+        },
     ]
 })
+router.beforeEach(async (to, from) => {
+    if (
+      // make sure the user is authenticated
+      !useAuth().signIn()
+    ) {
+      // redirect the user to the login page
+      return { name: 'Login' }
+    }
+  })
 
 export default router
