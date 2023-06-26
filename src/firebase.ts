@@ -15,7 +15,7 @@ const firebase = initializeApp({
 const auth = getAuth()
 
 export function useAuth() {
-    const user = ref(null)
+    const user = ref()
     const unsubscribe = auth.onAuthStateChanged((_user) => (user.value = _user))
     onUnmounted(unsubscribe)
     const isLogin = computed(() => user.value !== null)
