@@ -17,14 +17,14 @@ const router = createRouter({
         },
     ]
 })
-router.beforeEach(async (to, from) => {
-    if (
-      // make sure the user is authenticated
-      !useAuth().signIn()
-    ) {
-      // redirect the user to the login page
-      return { name: 'Login' }
-    }
-  })
+// router.beforeEach(async (to, from) => {
+//     if (
+//       // make sure the user is authenticated
+//       !useAuth().signIn()
+//     ) {
+//       // redirect the user to the login page
+//       return { name: 'Login' }
+//     }
+//   })
 
 export default router
