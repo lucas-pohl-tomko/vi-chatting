@@ -51,14 +51,6 @@ function callAnonymousSignIn() {
     logInAnonymously()
     router.push('/')
 }
-async function getChats() {
-    chats.value = []
-    const querySnapshot = await getDocs(collection(firestore, 'Chats'))
-    querySnapshot.forEach((doc) => {
-        chats.value.push(doc.data())
-        console.log(`${doc.id} => ${doc.data()}`)
-    })
-}
 </script>
 
 <style lang="scss">

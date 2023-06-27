@@ -26,7 +26,28 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onActivated, watch,onMounted } from 'vue'
 import Message from '../components/chat/Message.vue'
+import {firestore, useAuth} from '../firebase'
+import { collection, getDocs, query, where } from '@firebase/firestore';
+import { userStore } from '../stores/user';
+
+const chats = ref()
+const user = useAuth()
+
+watch(user, (newValue)=>{
+    getChats(newValue)
+})
+
+async function getChats(user: any) {
+    chats.value = []
+    console.log("hello: ",user.uid);
+    const querySnapshot = await getDocs(query(collection(firestore, 'Chats'), where('userID', '==', user.uid)))
+    querySnapshot.forEach((doc) => {
+        chats.value.push(doc.data())
+        console.log(`${doc.id} => ${doc.data()}`)
+    })
+}
 </script>
 
 <style lang="scss">
