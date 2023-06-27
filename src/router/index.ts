@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useAuth } from "../firebase"
+import { useAuth, currentUser } from "../firebase"
+const { user, isLogin, isLogged } = useAuth()
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
@@ -15,15 +16,30 @@ const router = createRouter({
                 }
             ]
         },
+        {
+            path: '/welcome',
+            name: 'welcome',
+            component: () => import('../layouts/Welcome.vue'),
+            children:[
+                {
+                    path: 'login',
+                    name: 'login',
+                    component: () => import('../views/LoginForm.vue'),
+                }
+            ]
+        },
     ]
 })
-// router.beforeEach(async (to, from) => {
+// router.beforeEach(async (to, from, next) => {
 //     if (
 //       // make sure the user is authenticated
-//       !useAuth().signIn()
+//       !currentUser && to.name !== 'login'
 //     ) {
 //       // redirect the user to the login page
-//       return { name: 'Login' }
+//       next({ name: 'login' })
+//     } else{
+//         next()
+//         console.log('useAuth().isLogin', currentUser, isLogin.value, user.value, to.name)
 //     }
 //   })
 

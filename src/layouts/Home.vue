@@ -24,6 +24,11 @@
                         </v-list-item>
                     </v-list-item>
                 </v-list>
+                <template v-slot:append>
+                    <div class="pa-2 m-5" v-if="isLogin">
+                        <v-btn block @click="logOff()">Logout</v-btn>
+                    </div>
+                </template>
             </v-navigation-drawer>
 
             <v-main style="height: 100vh; overflow-y: auto">
@@ -37,6 +42,9 @@
 import { RouterView } from 'vue-router'
 import { ref } from 'vue'
 import { useDisplay } from 'vuetify'
+import { useAuth } from '../firebase'
+
+const { isLogin, logOff } = useAuth()
 
 const mobile = useDisplay().mobile
 

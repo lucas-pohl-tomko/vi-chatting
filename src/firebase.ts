@@ -1,5 +1,13 @@
-import {initializeApp} from 'firebase/app'
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
+import { initializeApp } from 'firebase/app'
+import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signOut,
+    signInAnonymously,
+    setPersistence,
+    browserSessionPersistence
+} from 'firebase/auth'
 import { getFirestore, collection } from 'firebase/firestore'
 import { ref, onUnmounted, computed } from 'vue'
 
@@ -13,23 +21,40 @@ const firebase = initializeApp({
 })
 
 const auth = getAuth()
-
+export const currentUser = auth.currentUser;
 export function useAuth() {
     const user = ref()
     const unsubscribe = auth.onAuthStateChanged((_user) => (user.value = _user))
-    onUnmounted(unsubscribe)
     const isLogin = computed(() => user.value !== null)
-
     const signIn = async () => {
         const googleProvider = new GoogleAuthProvider()
-        await signInWithPopup(auth, googleProvider)
+        await signInWithPopup(auth, googleProvider) 
     }
-    const signOut = () => auth.signOut()
+    const logOff = () => {
+        signOut(auth)
+            .then(() => {
+                // Sign-out successful.)
+            })
+            .catch((error) => {
+                // An error happened.
+            })
+    }
+    const logInAnonymously = () => {
+        signInAnonymously(auth)
+            .then(() => {
+                // Signed in..
+            })
+            .catch((error) => {
+                const errorCode = error.code
+                const errorMessage = error.message
+                // ...
+            })
+    }
 
-    return { user, isLogin, signIn, signOut }
+    return { user, isLogin, signIn, logOff, logInAnonymously }
 }
+export const firestore = getFirestore(firebase)
 
-const firestore = getFirestore(firebase)
 // const messagesCollection = collection(firestore,'messages')
 // const messagesQuery = messagesCollection.orderBy('createdAt', 'desc').limit(100)
 // const filter = new Filter()
