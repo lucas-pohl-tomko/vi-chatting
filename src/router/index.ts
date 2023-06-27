@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuth, currentUser } from "../firebase"
-const { user, isLogin, isLogged } = useAuth()
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
