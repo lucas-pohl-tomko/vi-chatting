@@ -21,14 +21,14 @@ const firebase = initializeApp({
 })
 
 const auth = getAuth()
-export const currentUser = auth.currentUser;
+export const currentUser = auth.currentUser
 export function useAuth() {
     const user = ref()
     const unsubscribe = auth.onAuthStateChanged((_user) => (user.value = _user))
     const isLogin = computed(() => user.value !== null)
     const signIn = async () => {
         const googleProvider = new GoogleAuthProvider()
-        await signInWithPopup(auth, googleProvider) 
+        await signInWithPopup(auth, googleProvider)
     }
     const logOff = () => {
         signOut(auth)
@@ -39,16 +39,8 @@ export function useAuth() {
                 // An error happened.
             })
     }
-    const logInAnonymously = () => {
-        signInAnonymously(auth)
-            .then(() => {
-                // Signed in..
-            })
-            .catch((error) => {
-                const errorCode = error.code
-                const errorMessage = error.message
-                // ...
-            })
+    const logInAnonymously = async () => {
+        await signInAnonymously(auth)
     }
 
     return { user, isLogin, signIn, logOff, logInAnonymously }

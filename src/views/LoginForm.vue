@@ -34,8 +34,8 @@ import { useAuth } from '../firebase'
 import { firestore } from '../firebase'
 import { collection, getDocs } from 'firebase/firestore'
 import router from '@/router'
-const { user, isLogin, signIn, logInAnonymously } = useAuth()
 
+const { user, isLogin, signIn, logInAnonymously } = useAuth()
 const chats = ref()
 
 function displayUser() {
@@ -46,9 +46,9 @@ async function callSignIn() {
     await signIn()
     router.push('/')
 }
-function callAnonymousSignIn() {
+async function callAnonymousSignIn() {
     console.log(user)
-    logInAnonymously()
+    await logInAnonymously()
     router.push('/')
 }
 </script>

@@ -16,12 +16,13 @@
                     <div class="m-3 border-b-sm"></div>
                     <v-list-item class="flex flex-column justify-center">
                         <v-list-item v-for="assistant in assistants" :key="assistant.id">
-                            <router-link :to="`/${assistant.id}`"><v-btn
-                                flat
-                                class="rounded-md w-[10rem] bg-gradient-to-bl from-cyan-200 to-cyan-400 justify-start"
-                                >{{ assistant.name }}</v-btn
-                            ></router-link>
-                            
+                            <router-link :to="`/${assistant.id}`"
+                                ><v-btn
+                                    flat
+                                    class="rounded-md w-[10rem] bg-gradient-to-bl from-cyan-200 to-cyan-400 justify-start"
+                                    >{{ assistant.name }}</v-btn
+                                ></router-link
+                            >
                         </v-list-item>
                     </v-list-item>
                 </v-list>
@@ -43,7 +44,7 @@
 import { RouterView } from 'vue-router'
 import { onMounted, ref } from 'vue'
 import { useDisplay } from 'vuetify'
-import { collection, getDocs, orderBy, query, where } from 'firebase/firestore'
+import { collection, getDocs, or, orderBy, query, where } from 'firebase/firestore'
 import { firestore, useAuth } from '../firebase'
 
 const { isLogin, logOff } = useAuth()
@@ -51,29 +52,28 @@ const mobile = useDisplay().mobile
 const assistants = ref()
 const user = JSON.parse(localStorage.getItem(`loggedUser`) || ``)
 
-onMounted(async ()=>{
+onMounted(async () => {
     assistants.value = await getAssistants(user)
 })
 
 async function getAssistants(user: any) {
     try {
-        const assistants:any = []
+        const assistants: any = []
         const querySnapshot = await getDocs(
             query(
                 collection(firestore, 'Assistants'),
-                where('userID', '==', user.uid)
+                or(where('userID', '==', user.uid), where('type', '==', `public`))
             )
         )
         querySnapshot.forEach((doc) => {
             console.log('lets go', doc.data())
-            assistants.push({...doc.data(), id: doc.id})
+            assistants.push({ ...doc.data(), id: doc.id })
         })
         return assistants
     } catch (error) {
         console.log(error)
     }
 }
-
 </script>
 
 <style lang="scss">
