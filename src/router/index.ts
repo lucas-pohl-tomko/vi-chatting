@@ -9,7 +9,7 @@ const router = createRouter({
             component: () => import('../layouts/Home.vue'),
             children:[
                 {
-                    path: '',
+                    path: '/:id',
                     name: 'home-chat',
                     component: () => import('../views/Client.vue'),
                 }

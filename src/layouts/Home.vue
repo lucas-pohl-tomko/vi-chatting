@@ -15,12 +15,13 @@
                     </v-container>
                     <div class="m-3 border-b-sm"></div>
                     <v-list-item class="flex flex-column justify-center">
-                        <v-list-item v-for="item in items" :key="item.title">
-                            <v-btn
+                        <v-list-item v-for="assistant in assistants" :key="assistant.id">
+                            <router-link :to="`/${assistant.id}`"><v-btn
                                 flat
                                 class="rounded-md w-[10rem] bg-gradient-to-bl from-cyan-200 to-cyan-400 justify-start"
-                                >{{ item.title }}</v-btn
-                            >
+                                >{{ assistant.name }}</v-btn
+                            ></router-link>
+                            
                         </v-list-item>
                     </v-list-item>
                 </v-list>
@@ -40,15 +41,39 @@
 
 <script lang="ts" setup>
 import { RouterView } from 'vue-router'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useDisplay } from 'vuetify'
-import { useAuth } from '../firebase'
+import { collection, getDocs, orderBy, query, where } from 'firebase/firestore'
+import { firestore, useAuth } from '../firebase'
 
 const { isLogin, logOff } = useAuth()
-
 const mobile = useDisplay().mobile
+const assistants = ref()
+const user = JSON.parse(localStorage.getItem(`loggedUser`) || ``)
 
-const items = ref([{ title: `Assistant Kraut` }])
+onMounted(async ()=>{
+    assistants.value = await getAssistants(user)
+})
+
+async function getAssistants(user: any) {
+    try {
+        const assistants:any = []
+        const querySnapshot = await getDocs(
+            query(
+                collection(firestore, 'Assistants'),
+                where('userID', '==', user.uid)
+            )
+        )
+        querySnapshot.forEach((doc) => {
+            console.log('lets go', doc.data())
+            assistants.push({...doc.data(), id: doc.id})
+        })
+        return assistants
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 </script>
 
 <style lang="scss">

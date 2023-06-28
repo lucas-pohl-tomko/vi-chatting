@@ -8,7 +8,7 @@
             class="text-bubble rounded-shaped md:max-w-[50%] max-w-[90%] shadow-lg bg-cyan-lighten-4"
             :class="isAssistantMessage(sender) ? '' : 'my-message'"
         >
-            <h3 class="font-weight-medium mb-1"> {{ sender }} </h3>
+            <h3 class="font-weight-medium mb-1"> {{ sender.name }} </h3>
             <p v-html="message"></p>
         </div>
     </div>
@@ -16,16 +16,17 @@
 
 <script lang="ts" setup>
 import { useDisplay } from 'vuetify'
+const user = JSON.parse(localStorage.getItem(`loggedUser`) || ``)
 
 defineProps<{
-    sender: string
+    sender: any
     message?: string
 }>()
 
 const mobile = useDisplay().mobile
 
-function isAssistantMessage(sender: string): boolean {
-    if (sender === 'user') return false
+function isAssistantMessage(sender: any): boolean {
+    if (sender.id === user.uid) return false
     return true
 }
 
